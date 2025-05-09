@@ -1,7 +1,7 @@
 ## Today-s_Kitchen
 
-A Django-based web application for restaurant kitchens to register and manage their profiles.  
-This project allows kitchens to sign up with their specialties, securely store credentials, and log in to the platform.
+A Django-based web application that allows restaurant kitchens to register, manage their profiles, and securely log in.  
+All CSS and JavaScript are embedded directly within the HTML templates — no external static files required.
 
 ## Features
 
@@ -23,6 +23,7 @@ This project allows kitchens to sign up with their specialties, securely store c
 Create a virtual environment
 
 python -m venv env
+
 source env/bin/activate   # On Windows: env\Scripts\activate
 
 pip install -r requirements.txt
@@ -33,3 +34,6 @@ python manage.py migrate
 python manage.py runserver
 
 *[ all the html file are in one html folder ]*
+
+Contact
+📧 simanto.saha@g.bracu.ac.bd
