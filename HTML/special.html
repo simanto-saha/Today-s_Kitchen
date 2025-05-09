@@ -1,0 +1,197 @@
+{% extends "register/base.html" %}
+{% block title %}Today's Specials{% endblock %}
+
+{% block extra_css %}
+<style>
+body {
+    background: #f5f7fa;
+    color: #333;
+    font-family: 'Helvetica Neue', sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Header styles */
+.specials-header h1 {
+    text-align: center;
+    color: #ff6b6b;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.specials-header p {
+    text-align: center;
+    color: #666;
+    margin-bottom: 40px;
+    font-size: 1.1rem;
+}
+
+/* Grid */
+.special-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* Card */
+.special-item {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s;
+}
+
+.special-item:hover {
+    transform: translateY(-4px);
+}
+
+/* Image area */
+.special-img {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+}
+
+.special-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.special-time {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+
+/* Special badge */
+.special-flag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ff6b6b;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    z-index: 2;
+}
+
+/* Content */
+.special-content {
+    flex: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.special-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.special-description {
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    flex-grow: 1;
+}
+
+/* Price row */
+.special-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.special-price {
+    font-weight: bold;
+    color: #ff6b6b;
+    font-size: 1.1rem;
+}
+
+.special-discount {
+    background: #4caf50;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+}
+
+/* Back to menu */
+.back-to-menu {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.back-to-menu a {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #ff6b6b;
+    color: white;
+    border-radius: 25px;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.back-to-menu a:hover {
+    background: #e05858;
+}
+
+.back-to-menu i {
+    margin-right: 5px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="specials-header">
+    <h1>Today's Special Offers</h1>
+    <p>Enjoy these limited-time dishes prepared by our talented chefs</p>
+  </div>
+  
+  <div class="special-items">
+    {% for special in specials %}
+    <a href="{% url 'menu_item_detail' special.id %}" class="special-item">
+      <div class="special-img">
+        <img src="{{ special.image.url }}" alt="{{ special.name }}">
+        <div class="special-flag">Special</div>
+        <div class="special-time"><i class="far fa-clock"></i> Limited Time</div>
+      </div>
+      <div class="special-content">
+        <div class="special-name">{{ special.name }}</div>
+        <p class="special-description">{{ special.description|truncatechars:80 }}</p>
+        <div class="special-price-row">
+          <div class="special-price">${{ special.price }}</div>
+          {% if special.discount %}
+          <div class="special-discount">{{ special.discount }}% Off</div>
+          {% endif %}
+        </div>
+      </div>
+    </a>
+    {% empty %}
+    <p style="text-align:center; color:#999;">No special offers available today. Check back soon!</p>
+    {% endfor %}
+  </div>
+  
+  <div class="back-to-menu">
+    <a href="{% url 'menu' %}"><i class="fas fa-arrow-left"></i> Back to Full Menu</a>
+  </div>
+</div>
+{% endblock %}

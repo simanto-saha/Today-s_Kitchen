@@ -1,0 +1,238 @@
+{% extends "register/base.html" %}
+
+{% block extra_css %}
+<style>
+    /* Custom styles for the edit profile page */
+    .profile-edit-container {
+        margin: 50px auto;
+        max-width: 800px;
+    }
+    
+    .profile-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .profile-card:hover {
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        transform: translateY(-5px);
+    }
+    
+    .card-header-gradient {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        color: white;
+        padding: 25px 20px;
+        border: none;
+    }
+    
+    .profile-title {
+        font-weight: 700;
+        font-size: 1.8rem;
+        letter-spacing: 0.5px;
+        margin: 0;
+    }
+    
+    .form-control-custom {
+        height: 48px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        padding: 10px 15px;
+        font-size: 16px;
+        transition: all 0.3s;
+    }
+    
+    .form-control-custom:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    }
+    
+    .form-label-custom {
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 8px;
+        font-size: 15px;
+    }
+    
+    .input-group-custom {
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .input-icon {
+        background-color: #f8f9fa;
+        color: #4e73df;
+        border: 1px solid #e0e0e0;
+        border-right: none;
+        width: 50px;
+        justify-content: center;
+    }
+    
+    .btn-custom-primary {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 5px 15px rgba(78, 115, 223, 0.3);
+        transition: all 0.3s;
+    }
+    
+    .btn-custom-primary:hover {
+        box-shadow: 0 8px 20px rgba(78, 115, 223, 0.4);
+        transform: translateY(-2px);
+    }
+    
+    .btn-custom-secondary {
+        background-color: white;
+        color: #444;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-custom-secondary:hover {
+        background-color: #f8f9fa;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .form-section {
+        padding: 30px 40px;
+    }
+    
+    .error-feedback {
+        color: #e74a3b;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+    
+    .avatar-hint {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 25px;
+    }
+    
+    .avatar-hint a {
+        color: #4e73df;
+        font-weight: 600;
+        text-decoration: none;
+    }
+    
+    .avatar-hint a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-edit-container">
+    <div class="profile-card">
+        <div class="card-header-gradient">
+            <h2 class="profile-title text-center">Edit Your Profile</h2>
+        </div>
+        <div class="form-section">
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label for="id_username" class="form-label-custom">Username</label>
+                    <div class="input-group input-group-custom">
+                        <span class="input-group-text input-icon">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        {{ form.username|safe }}
+                    </div>
+                    {% if form.username.errors %}
+                        <div class="error-feedback">
+                            {{ form.username.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                    <label for="id_email" class="form-label-custom">Email Address</label>
+                    <div class="input-group input-group-custom">
+                        <span class="input-group-text input-icon">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                        {{ form.email|safe }}
+                    </div>
+                    {% if form.email.errors %}
+                        <div class="error-feedback">
+                            {{ form.email.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <label for="id_first_name" class="form-label-custom">First Name</label>
+                            <div class="input-group input-group-custom">
+                                <span class="input-group-text input-icon">
+                                    <i class="fas fa-id-card"></i>
+                                </span>
+                                {{ form.first_name|safe }}
+                            </div>
+                            {% if form.first_name.errors %}
+                                <div class="error-feedback">
+                                    {{ form.first_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <label for="id_last_name" class="form-label-custom">Last Name</label>
+                            <div class="input-group input-group-custom">
+                                <span class="input-group-text input-icon">
+                                    <i class="fas fa-id-card"></i>
+                                </span>
+                                {{ form.last_name|safe }}
+                            </div>
+                            {% if form.last_name.errors %}
+                                <div class="error-feedback">
+                                    {{ form.last_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between mt-5">
+                    <a href="{% url 'main-home' %}" class="btn-custom-secondary">
+                        <i class="fas fa-arrow-left me-2"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn-custom-primary">
+                        <i class="fas fa-save me-2"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+            
+            <div class="avatar-hint text-center">
+                <p class="mb-1">Want to update your profile picture?</p>
+                <a href="#">Click here to change your avatar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add custom class to Django form inputs
+    document.addEventListener('DOMContentLoaded', function() {
+        const formInputs = document.querySelectorAll('input[type="text"], input[type="email"]');
+        formInputs.forEach(input => {
+            input.classList.add('form-control', 'form-control-custom');
+        });
+    });
+</script>
+{% endblock %}

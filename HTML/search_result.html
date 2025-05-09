@@ -1,0 +1,37 @@
+{% extends 'register/base.html' %}
+{% block content %}
+    <section style="padding: 4rem 2rem; background-color: #fff9f0;">
+        <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2rem; color: #333;">
+            Search Results for "{{ query }}"
+        </h2>
+        
+        {% if restaurants %}
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; max-width: 1200px; margin: 0 auto;">
+                {% for restaurant in restaurants %}
+                    <div style="background-color: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 280px; transition: transform 0.3s;">
+                        {% if restaurant.logo %}
+                            <img src="{{ restaurant.logo.url }}" alt="{{ restaurant.name }}" style="width: 100%; height: 180px; object-fit: cover;">
+                        {% else %}
+                            <div style="width: 100%; height: 180px; background-color: #ff6b6b; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                                {{ restaurant.name|slice:":1" }}
+                            </div>
+                        {% endif %}
+                        <div style="padding: 1.5rem;">
+                            <h3 style="margin-bottom: 0.5rem;">{{ restaurant.name }}</h3>
+                            <p style="margin-bottom: 1rem;">{{ restaurant.address }}</p>
+                            {% if restaurant.description %}
+                                <p style="font-size: 0.9rem; color: #666;">{{ restaurant.description|truncatechars:100 }}</p>
+                            {% endif %}
+                            <a href="{% url 'menu' %}?restaurant={{ restaurant.id }}" class="btn" style="display: inline-block; margin-top: 1rem; background-color: #ff6b6b; color: white; border: none; padding: 8px 20px; font-size: 1rem; border-radius: 30px; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; font-weight: bold; text-decoration: none;">View Menu</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 2rem;">
+                <p style="font-size: 1.2rem; color: #666;">No restaurants found matching your search criteria.</p>
+                <a href="{% url 'main-home' %}" class="btn" style="display: inline-block; margin-top: 1rem; background-color: #ff6b6b; color: white; border: none; padding: 12px 30px; font-size: 1.1rem; border-radius: 30px; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; font-weight: bold; text-decoration: none;">Return to Home</a>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

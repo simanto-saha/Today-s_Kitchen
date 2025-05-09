@@ -1,0 +1,345 @@
+{% extends 'register/base.html' %}
+{% load static %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block extra_css %}
+<style>
+body {
+    background: #f5f7fa;
+    font-family: 'Helvetica Neue', sans-serif;
+}
+
+.container h2 {
+    text-align: center;
+    color: #ff6b6b;
+    margin-bottom: 30px;
+}
+
+.section-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.section-card h4 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.alert-success {
+    margin-top: 10px;
+}
+
+.order-summary table td {
+    padding: 6px 0;
+}
+
+.order-summary .text-success {
+    font-weight: bold;
+}
+
+.card-body label {
+    font-weight: 500;
+}
+
+.card-body input,
+.card-body select,
+.card-body textarea {
+    height: 45px;
+}
+
+/* Place Order Button */
+.place-order-btn {
+    display: inline-block;
+    background: #ff6b6b;
+    color: white;
+    text-align: center;
+    padding: 12px 30px;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.place-order-btn:hover {
+    background: #e05858;
+}
+
+/* Two-column layout */
+.checkout-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Stack columns on mobile */
+@media (max-width: 768px) {
+    .checkout-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <h2>Checkout</h2>
+
+    <!-- Promo Code Form - SEPARATE FROM MAIN CHECKOUT FORM -->
+    <div class="section-card">
+        <h4>Have a promo code?</h4>
+        <form id="promo-form" method="post" action="{% url 'promo' %}" class="form-inline">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="promo_code" id="promo-code-input" class="form-control" placeholder="Enter promo code">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                </div>
+            </div>
+        </form>
+        <div id="promo-message" class="mt-2">
+            {% if promo_code %}
+            <div class="alert alert-success">
+                Promo code applied: <strong>{{ promo_code }}</strong>
+                {% if is_free_order %} (FREE ORDER!) {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Checkout Form -->
+    <form method="post" id="checkout-form">
+        {% csrf_token %}
+
+        <div class="checkout-grid">
+            <!-- LEFT COLUMN -->
+            <div>
+                <!-- Order Summary -->
+                <div class="section-card order-summary">
+                    <h4>Order Summary</h4>
+                    <table class="table">
+                        <tr><td>Subtotal</td><td class="text-right">{{ subtotal }} TK</td></tr>
+                        {% if discount_amount and discount_amount > 0 %}
+                        <tr><td>Discount</td><td class="text-right text-success">-{{ discount_amount }} TK</td></tr>
+                        {% endif %}
+                        <tr><td>Shipping</td><td class="text-right">{{ shipping_cost }} TK</td></tr>
+                        <tr class="font-weight-bold"><td>Total</td><td class="text-right">{{ total }} TK</td></tr>
+                    </table>
+                    
+                    {% if discount_message %}
+                    <div class="alert alert-success mt-2">
+                        {{ discount_message }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div>
+                <!-- Shipping Info -->
+                <div class="section-card">
+                    <h4>Shipping Information</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ shipping_form.full_name.id_for_label }}">Full Name</label>
+                            {{ shipping_form.full_name }}
+                            {% if shipping_form.full_name.errors %}
+                            <div class="text-danger">{{ shipping_form.full_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ shipping_form.email.id_for_label }}">Email</label>
+                            {{ shipping_form.email }}
+                            {% if shipping_form.email.errors %}
+                            <div class="text-danger">{{ shipping_form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ shipping_form.address.id_for_label }}">Address</label>
+                        {{ shipping_form.address }}
+                        {% if shipping_form.address.errors %}
+                        <div class="text-danger">{{ shipping_form.address.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ shipping_form.city.id_for_label }}">City</label>
+                            {{ shipping_form.city }}
+                            {% if shipping_form.city.errors %}
+                            <div class="text-danger">{{ shipping_form.city.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ shipping_form.state.id_for_label }}">State</label>
+                            {{ shipping_form.state }}
+                            {% if shipping_form.state.errors %}
+                            <div class="text-danger">{{ shipping_form.state.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ shipping_form.postal_code.id_for_label }}">Postal Code</label>
+                            {{ shipping_form.postal_code }}
+                            {% if shipping_form.postal_code.errors %}
+                            <div class="text-danger">{{ shipping_form.postal_code.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ shipping_form.phone.id_for_label }}">Phone</label>
+                        {{ shipping_form.phone }}
+                        {% if shipping_form.phone.errors %}
+                        <div class="text-danger">{{ shipping_form.phone.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Payment Info -->
+                <div class="section-card">
+                    <h4>Payment Method</h4>
+                    {% for radio in payment_form.payment_method %}
+                    <div class="form-check mb-2">
+                        {{ radio.tag }}
+                        <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                    </div>
+                    {% endfor %}
+                    {% if payment_form.payment_method.errors %}
+                    <div class="text-danger">{{ payment_form.payment_method.errors }}</div>
+                    {% endif %}
+
+                    <div id="card-payment-fields" style="display: none;">
+                        <div class="row mt-3">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ payment_form.card_number.id_for_label }}">Card Number</label>
+                                {{ payment_form.card_number }}
+                                {% if payment_form.card_number.errors %}
+                                <div class="text-danger">{{ payment_form.card_number.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ payment_form.card_holder_name.id_for_label }}">Card Holder Name</label>
+                                {{ payment_form.card_holder_name }}
+                                {% if payment_form.card_holder_name.errors %}
+                                <div class="text-danger">{{ payment_form.card_holder_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ payment_form.expiry_month.id_for_label }}">Expiry Month</label>
+                                {{ payment_form.expiry_month }}
+                                {% if payment_form.expiry_month.errors %}
+                                <div class="text-danger">{{ payment_form.expiry_month.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ payment_form.expiry_year.id_for_label }}">Expiry Year</label>
+                                {{ payment_form.expiry_year }}
+                                {% if payment_form.expiry_year.errors %}
+                                <div class="text-danger">{{ payment_form.expiry_year.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ payment_form.cvv.id_for_label }}">CVV</label>
+                                {{ payment_form.cvv }}
+                                {% if payment_form.cvv.errors %}
+                                <div class="text-danger">{{ payment_form.cvv.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="text-center mt-4">
+            <button type="submit" class="place-order-btn">Place Order</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Show/hide card payment fields
+    const paymentRadios = document.querySelectorAll('input[name="payment-payment_method"]');
+    const cardFields = document.getElementById('card-payment-fields');
+
+    function updateCardFieldsVisibility() {
+        const selectedPayment = document.querySelector('input[name="payment-payment_method"]:checked');
+        if (selectedPayment && selectedPayment.value === 'card') {
+            cardFields.style.display = 'block';
+        } else {
+            cardFields.style.display = 'none';
+        }
+    }
+
+    updateCardFieldsVisibility();
+    paymentRadios.forEach(function(radio) {
+        radio.addEventListener('change', updateCardFieldsVisibility);
+    });
+
+    // Handle promo code form submission via AJAX
+    const promoForm = document.getElementById('promo-form');
+    const promoMessage = document.getElementById('promo-message');
+    
+    promoForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(promoForm);
+        
+        fetch(promoForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.valid) {
+                // Success - show message and refresh the page to update totals
+                promoMessage.innerHTML = `
+                    <div class="alert alert-success">
+                        ${data.message}
+                    </div>
+                `;
+                // Refresh the page after a short delay to show updated totals
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                // Error - show message
+                promoMessage.innerHTML = `
+                    <div class="alert alert-danger">
+                        ${data.message}
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            promoMessage.innerHTML = `
+                <div class="alert alert-danger">
+                    An error occurred. Please try again.
+                </div>
+            `;
+            console.error('Error:', error);
+        });
+    });
+});
+</script>
+{% endblock %}

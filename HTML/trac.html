@@ -1,0 +1,431 @@
+{% extends "register/base.html" %}
+{% block title %}Order Tracking{% endblock %}
+
+{% block content %}
+<div class="tracking-container">
+    <div class="tracking-header">
+        <div class="tracking-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-truck">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+            </svg>
+        </div>
+        <h1>Order Tracking</h1>
+        <p>Track your order {% if order %}#{{ order.order_number }}{% else %}#TD{{ request.session.order_id|default:"12345" }}{% endif %}</p>
+    </div>
+    
+    <div class="tracking-status">
+        <div class="status-timeline">
+            <div class="status-step completed">
+                <div class="step-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="step-content">
+                    <h3>Order Placed</h3>
+                    <p>{% if order %}{{ order.created_at|date:"F j, Y, g:i a" }}{% else %}{% now "F j, Y, g:i a" %}{% endif %}</p>
+                </div>
+            </div>
+            
+            <div class="status-step" id="preparing-step">
+                <div class="step-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="step-content">
+                    <h3>Preparing Your Order</h3>
+                    <p>Your food is being prepared</p>
+                </div>
+            </div>
+            
+            <div class="status-step" id="pickup-step">
+                <div class="step-icon">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <div class="step-content">
+                    <h3>Ready for Pickup</h3>
+                    <p>Delivery boy is at the restaurant</p>
+                </div>
+            </div>
+            
+            <div class="status-step" id="delivery-step">
+                <div class="step-icon">
+                    <i class="fas fa-motorcycle"></i>
+                </div>
+                <div class="step-content">
+                    <h3>On the Way</h3>
+                    <p>Delivery boy is coming to you</p>
+                </div>
+            </div>
+            
+            <div class="status-step" id="delivered-step">
+                <div class="step-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="step-content">
+                    <h3>Delivered</h3>
+                    <p>Enjoy your meal!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tracking-details" id="tracking-details">
+        <!-- Content will be updated via JavaScript -->
+    </div>
+    
+    <div class="delivery-info">
+        <h2>Order & Delivery Information</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Order Number:</span>
+                <span class="info-value">{% if order %}{{ order.order_number }}{% else %}TD{{ request.session.order_id|default:"12345" }}{% endif %}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Order Date:</span>
+                <span class="info-value">{% if order %}{{ order.created_at|date:"F j, Y" }}{% else %}{% now "F j, Y" %}{% endif %}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Estimated Delivery:</span>
+                <span class="info-value">30-45 minutes</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Delivery Address:</span>
+                <span class="info-value">{% if order %}{{ order.address }}, {{ order.city }}{% else %}Your delivery address{% endif %}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tracking-controls">
+        <button id="track-btn" class="track-btn">Update Tracking Status</button>
+        <a href="{% url 'menu' %}" class="back-btn">Back to Menu</a>
+    </div>
+</div>
+
+<style>
+    .tracking-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #333;
+    }
+    
+    .tracking-header, .tracking-status, .tracking-details, .delivery-info {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .tracking-header {
+        text-align: center;
+        padding: 2rem;
+        background: linear-gradient(to bottom, #f8f9fa, #fff);
+    }
+    
+    .tracking-icon {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 1.5rem;
+        color: #ff6b6b;
+        animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-20px);
+        }
+        60% {
+            transform: translateY(-10px);
+        }
+    }
+    
+    .tracking-header h1 {
+        margin-bottom: 1rem;
+        color: #333;
+        font-size: 2.5rem;
+    }
+    
+    h2 {
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        color: #333;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 0.75rem;
+        font-size: 1.5rem;
+    }
+    
+    .status-timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .status-step {
+        display: flex;
+        opacity: 0.4;
+        transition: all 0.3s ease;
+    }
+    
+    .status-step.completed, .status-step.active {
+        opacity: 1;
+    }
+    
+    .step-icon {
+        flex-shrink: 0;
+        width: 50px;
+        height: 50px;
+        background-color: #eee;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-right: 1rem;
+        color: #666;
+        transition: all 0.3s ease;
+    }
+    
+    .status-step.completed .step-icon {
+        background-color: #5cb85c;
+        color: white;
+    }
+    
+    .status-step.active .step-icon {
+        background-color: #ff6b6b;
+        color: white;
+        animation: pulse 1.5s infinite;
+    }
+    
+    .step-content h3 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1.1rem;
+    }
+    
+    .step-content p {
+        margin: 0;
+        color: #666;
+        font-size: 0.9rem;
+    }
+    
+    .tracking-details {
+        text-align: center;
+        padding: 2rem;
+        display: none;
+    }
+    
+    .tracking-details.active {
+        display: block;
+    }
+    
+    .delivery-boy-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .delivery-boy-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid #ff6b6b;
+    }
+    
+    .delivery-boy-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .delivery-boy-details h3 {
+        margin: 0 0 0.5rem 0;
+    }
+    
+    .delivery-boy-details p {
+        margin: 0.25rem 0;
+    }
+    
+    .order-photo {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+    
+    .order-photo img {
+        width: 100%;
+        height: auto;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .info-item {
+        margin-bottom: 0.5rem;
+    }
+    
+    .info-label {
+        font-weight: bold;
+        color: #666;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+    
+    .tracking-controls {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .track-btn, .back-btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+        flex: 1;
+    }
+    
+    .track-btn {
+        background-color: #ff6b6b;
+        color: white;
+    }
+    
+    .back-btn {
+        background-color: #f0f0f0;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .track-btn:hover, .back-btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .track-btn:hover {
+        background-color: #ff5252;
+    }
+    
+    .back-btn:hover {
+        background-color: #e9e9e9;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .tracking-container {
+            padding: 1rem;
+        }
+        
+        .delivery-boy-info {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .tracking-controls {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const trackBtn = document.getElementById('track-btn');
+        const trackingDetails = document.getElementById('tracking-details');
+        
+        // Status steps
+        const preparingStep = document.getElementById('preparing-step');
+        const pickupStep = document.getElementById('pickup-step');
+        const deliveryStep = document.getElementById('delivery-step');
+        const deliveredStep = document.getElementById('delivered-step');
+        
+        let currentStatus = 0;
+        
+        // Update status function
+        function updateStatus() {
+            currentStatus++;
+            
+            if (currentStatus === 1) {
+                // First click: Delivery boy is at restaurant
+                preparingStep.classList.add('completed');
+                pickupStep.classList.add('active');
+                
+                trackingDetails.innerHTML = `
+                    <div class="status-message">
+                        <h2>Status Update</h2>
+                        <p>Your order has been prepared and our delivery partner is at the restaurant picking up your food.</p>
+                    </div>
+                `;
+                trackingDetails.style.display = 'block';
+            } 
+            else if (currentStatus === 2) {
+                // Second click: Delivery boy is coming with order picture
+                pickupStep.classList.add('completed');
+                pickupStep.classList.remove('active');
+                deliveryStep.classList.add('active');
+                
+                trackingDetails.innerHTML = `
+                    <div class="status-message">
+                        <h2>Your Food Is On The Way!</h2>
+                        <div class="delivery-boy-info">
+                            <div class="delivery-boy-avatar">
+                                <img src="/api/placeholder/80/80" alt="Delivery Partner">
+                            </div>
+                            <div class="delivery-boy-details">
+                                <h3>Ahmed</h3>
+                                <p>Your Delivery Partner</p>
+                                <p>Estimated arrival: 15 minutes</p>
+                            </div>
+                        </div>
+                        <div class="order-photo">
+                            <img src="/api/placeholder/300/200" alt="Your Order">
+                            <p>Your order is packed and on its way!</p>
+                        </div>
+                    </div>
+                `;
+            }
+            else if (currentStatus === 3) {
+                // Third click: Delivered
+                deliveryStep.classList.add('completed');
+                deliveryStep.classList.remove('active');
+                deliveredStep.classList.add('completed');
+                
+                trackingDetails.innerHTML = `
+                    <div class="status-message">
+                        <h2>Delivered!</h2>
+                        <p>Your food has been delivered. Enjoy your meal!</p>
+                        <div class="order-photo">
+                            <img src="/api/placeholder/300/200" alt="Delivered Order">
+                        </div>
+                        <p>Please rate your delivery experience in your order history.</p>
+                    </div>
+                `;
+                
+                // Disable track button
+                trackBtn.disabled = true;
+                trackBtn.style.opacity = 0.5;
+                trackBtn.textContent = "Order Delivered";
+            }
+        }
+        
+        // Add click event listener to the track button
+        trackBtn.addEventListener('click', updateStatus);
+    });
+</script>
+{% endblock %}

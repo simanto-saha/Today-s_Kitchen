@@ -1,0 +1,56 @@
+{% extends "register/base.html" %}
+
+{% block content %}
+<div class="notifications-container">
+    <h2>Notifications</h2>
+
+    {% if notification %}
+        <ul class="notification-list">
+            {% for notification in notification %}
+                <li class="notification-item {% if not notification.is_read %}unread{% endif %}">
+                    <h4>{{ notification.title }}</h4>
+
+                    <p>
+                        <a href="{% url 'notification_detail' notification.id %}">
+                            {{ notification.message }}
+                        </a>
+                    </p>
+
+                    {% if notification.menu_item %}
+                        <p><strong>Related Item:</strong> <a href="{{ notification.menu_item.get_absolute_url }}">{{ notification.menu_item.name }}</a></p>
+                    {% endif %}
+
+                    <small>Received on {{ notification.created_at|date:"M d, Y H:i" }}</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No notifications available.</p>
+    {% endif %}
+</div>
+
+<style>
+.notifications-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.notification-list {
+    list-style: none;
+    padding: 0;
+}
+.notification-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+.notification-item.unread {
+    background-color: #f9f9f9;
+    border-color: #007bff;
+}
+.notification-item h4 {
+    margin-top: 0;
+}
+</style>
+{% endblock %}

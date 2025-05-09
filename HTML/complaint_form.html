@@ -1,0 +1,182 @@
+{% extends "register/base.html" %}
+
+{% block title %}Customer Support | Today's Kitchen{% endblock %}
+
+{% block extra_css %}
+<style>
+    .submit-container {
+        text-align: center;
+        margin: 2rem 0;
+        padding: 1.5rem;
+        border-radius: 10px;
+        background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .submit-heading {
+        color: #495057;
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 1.2rem;
+        letter-spacing: 0.5px;
+    }
+
+    .submit-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: white;
+        background-color: #4a6baf;
+        border: none;
+        border-radius: 50px;
+        box-shadow: 0 4px 10px rgba(74, 107, 175, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .submit-btn:hover {
+        background-color: #3a5795;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(74, 107, 175, 0.4);
+    }
+
+    .submit-btn-icon {
+        margin-left: 8px;
+        transition: transform 0.3s ease;
+    }
+
+    .submit-btn:hover .submit-btn-icon {
+        transform: translateX(4px);
+    }
+
+    .hero {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+        background-size: cover;
+        background-position: center;
+        padding: 2rem;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+    }
+
+    .special-highlight {
+        background-color: white;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 4rem 2rem;
+    }
+
+    form {
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    input, textarea, select {
+        width: 100%;
+        padding: 0.8rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .btn {
+        background-color: #4a6baf;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+        background-color: #3a5795;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero" style="height: 200px; background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1584438784894-089d6a62b8fa');">
+    <h1>Customer Support</h1>
+    <p>We're here to help with any issues</p>
+</section>
+
+<div class="special-highlight">
+    <div class="special-container">
+        <div class="special-content">
+            <form id="complaintForm" method="POST" action="{% url 'complain' %}">
+                {% csrf_token %}
+                <div>
+                    <label for="id_name">Name:</label>
+                    <input type="text" name="name" id="id_name" required>
+                </div>
+                        
+                <div>
+                    <label for="id_email">Email:</label>
+                    <input type="email" name="email" id="id_email" required>
+                </div>
+                        
+                <div>
+                    <label for="id_order_number">Order Number (if applicable):</label>
+                    <input type="text" name="order_number" id="id_order_number">
+                </div>
+                        
+                <div>
+                    <label for="id_complaint_type">Type of Issue:</label>
+                    <select name="complaint_type" id="id_complaint_type" required>
+                    <option value="">Select an issue type</option>
+                    <option value="order">Order Problem</option>
+                    <option value="food">Food Quality</option>
+                    <option value="service">Customer Service</option>
+                    <option value="delivery">Delivery Issue</option>
+                    <option value="other">Other</option>
+                    </select>
+                </div>
+                        
+                <div>
+                    <label for="id_issue">Description of Issue:</label>
+                    <textarea name="issue" id="id_issue" rows="5" required></textarea>
+                </div>
+                        
+                    <div class="submit-container">
+                    <p class="submit-heading">Submit Complaint</p>
+                <button type="submit" class="submit-btn">
+                <span class="submit-btn-text">Submit</span>
+                <span class="submit-btn-icon">→</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

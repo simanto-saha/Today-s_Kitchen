@@ -1,0 +1,394 @@
+{% extends 'register/base.html' %}
+{% load static %}
+
+{% block title %}Meal Registration | Today's Kitchen{% endblock %}
+
+{% block extra_css %}
+<style>
+        /* Import Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
+    
+    body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        line-height: 1.6;
+    }
+    
+    /* Form element styling */
+    .form-control:focus, .form-select:focus {
+        border-color: #4CAF50;
+        box-shadow: 0 0 0 0.25rem rgba(76, 175, 80, 0.25);
+    }
+    
+    .form-control, .form-select {
+        padding: 14px;
+        border-radius: 10px;
+        border: 2px solid #E0E0E0;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #4CAF50;
+        box-shadow: 0 0 15px rgba(76, 175, 80, 0.2);
+    }
+    
+    /* Card styling */
+    .custom-card {
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+    
+    .custom-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%);
+        padding: 2rem;
+    }
+    
+    /* Button styling */
+    .btn-primary {
+        background: linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%);
+        border: none;
+        padding: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #1B5E20 0%, #388E3C 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(76, 175, 80, 0.5);
+    }
+    
+    /* Text styling */
+    .form-label {
+        font-weight: 600;
+        color: #1B5E20;
+        margin-bottom: 0.8rem;
+        font-size: 1.1rem;
+        letter-spacing: 0.3px;
+    }
+    
+    .form-text {
+        color: #666;
+        font-size: 0.95rem;
+        margin-top: 0.5rem;
+    }
+    
+    .form-check-label {
+        font-weight: 500;
+        color: #333;
+    }
+    
+    .form-check-input:checked {
+        background-color: #4CAF50;
+        border-color: #4CAF50;
+        transform: scale(1.1);
+        transition: all 0.2s ease;
+    }
+    
+    /* Policy container */
+    .policy-container {
+        border-radius: 12px;
+        border: 2px solid #E0E0E0;
+        background-color: #F9FFF9;
+        padding: 1.5rem !important;
+    }
+    
+    .policy-container h5 {
+        font-size: 1.2rem;
+        color: #1B5E20;
+    }
+    
+    .policy-container ul {
+        padding-left: 1.5rem;
+    }
+    
+    .policy-container ul li {
+        margin-bottom: 0.5rem;
+        position: relative;
+    }
+    
+    /* Header styling */
+    .page-header {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 700;
+        font-size: 2.2rem;
+        letter-spacing: 0.8px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-steps {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+    }
+    
+    .step {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        position: relative;
+    }
+    
+    .step:not(:last-child):after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 0;
+        width: 100%;
+        height: 2px;
+        background-color: #E0E0E0;
+        transform: translateY(-50%);
+        z-index: -1;
+    }
+    
+    .step-circle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #E0E0E0;
+        color: #757575;
+        font-weight: bold;
+        margin-bottom: 8px;
+        z-index: 1;
+        position: relative;
+    }
+    
+    .step.active .step-circle {
+        background-color: #4CAF50;
+        color: white;
+    }
+    
+    .step-label {
+        font-size: 0.85rem;
+        color: #757575;
+    }
+    
+    .step.active .step-label {
+        color: #2E7D32;
+        font-weight: 500;
+    }
+    
+    .form-control, .form-select {
+        padding: 12px;
+        border-radius: 8px;
+    }
+    
+    /* Animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animated-card {
+        animation: fadeIn 0.6s ease-out;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Progress Steps -->
+            <div class="form-steps mb-4">
+                <div class="step active">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Personal Details</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Meal Selection</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Payment</div>
+                </div>
+            </div>
+            
+            <div class="card custom-card shadow animated-card">
+                <div class="card-header text-white">
+                    <h2 class="mb-0 page-header">Meal Registration</h2>
+                    <p class="mb-0 text-white-50">Complete the form to subscribe to Today's Kitchen meal service</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <!-- Non Field Errors -->
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger mb-4 rounded-3">
+                            {% for error in form.non_field_errors %}
+                                <p class="mb-0">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Address Field -->
+                        <div class="mb-4">
+                            <label for="{{ form.address.id_for_label }}" class="form-label">
+                                <i class="bi bi-geo-alt me-1"></i> Delivery Address
+                            </label>
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                                <div class="text-danger small mt-2">
+                                    {% for error in form.address.errors %}
+                                        <p class="mb-0">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Please provide your complete address for meal delivery</div>
+                        </div>
+
+                        <!-- Start Date Field -->
+                        <div class="mb-4">
+                            <label for="{{ form.start_date.id_for_label }}" class="form-label">
+                                <i class="bi bi-calendar me-1"></i> Start Date
+                            </label>
+                            {{ form.start_date }}
+                            {% if form.start_date.errors %}
+                                <div class="text-danger small mt-2">
+                                    {% for error in form.start_date.errors %}
+                                        <p class="mb-0">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Select the date when you want to start receiving meals</div>
+                        </div>
+
+                        <!-- Meal Price Range Field -->
+                        <div class="mb-4">
+                            <label for="{{ form.meal_range.id_for_label }}" class="form-label">
+                                <i class="bi bi-tag me-1"></i> Select Meal Price Range
+                            </label>
+                            {{ form.meal_range }}
+                            {% if form.meal_range.errors %}
+                                <div class="text-danger small mt-2">
+                                    {% for error in form.meal_range.errors %}
+                                        <p class="mb-0">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Choose a meal plan that fits your budget</div>
+                        </div>
+
+                        <!-- Advance Payment Field -->
+                        <div class="mb-4">
+                            <label for="{{ form.advance_payment.id_for_label }}" class="form-label">
+                                <i class="bi bi-cash me-1"></i> Advance Payment (BDT)
+                            </label>
+                            {{ form.advance_payment }}
+                            {% if form.advance_payment.errors %}
+                                <div class="text-danger small mt-2">
+                                    {% for error in form.advance_payment.errors %}
+                                        <p class="mb-0">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">This amount will be deducted from your first month's bill</div>
+                        </div>
+
+                        <!-- Terms and Policy Section -->
+                        <div class="mb-4">
+                            <div class="policy-container p-3 mb-3" style="max-height:150px; overflow:auto;">
+                                <h5 class="text-success fw-bold mb-2">Terms & Policies</h5>
+                                <p class="mb-2">By subscribing to our meal service, you agree to the following terms:</p>
+                                <ul class="mb-0">
+                                    <li>The advance payment is non-refundable</li>
+                                    <li>Meals will be provided according to the agreed schedule</li>
+                                    <li>Cancellation requires a 7-day advance notice</li>
+                                    <li>Today's Kitchen reserves the right to modify services as needed</li>
+                                    <li>For full terms, please contact customer support</li>
+                                </ul>
+                            </div>
+                            <div class="form-check">
+                                {{ form.agree_terms }}
+                                <label class="form-check-label" for="{{ form.agree_terms.id_for_label }}">
+                                    I agree to the terms and policies
+                                </label>
+                            </div>
+                            {% if form.agree_terms.errors %}
+                                <div class="text-danger small mt-2">
+                                    {% for error in form.agree_terms.errors %}
+                                        <p class="mb-0">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle me-2"></i>Complete Registration
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="card-footer bg-light p-3 text-center">
+                    <p class="mb-0 text-muted">Need help? Contact us at <a href="mailto:support@todayskitchen.com" class="text-success">support@todayskitchen.com</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add datepicker to start_date field if not already enabled
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ensure form fields have appropriate classes
+        const addressField = document.getElementById('{{ form.address.id_for_label }}');
+        const startDateField = document.getElementById('{{ form.start_date.id_for_label }}');
+        const advancePaymentField = document.getElementById('{{ form.advance_payment.id_for_label }}');
+        const mealRangeField = document.getElementById('{{ form.meal_range.id_for_label }}');
+        
+        if (addressField && !addressField.classList.contains('form-control')) {
+            addressField.classList.add('form-control');
+        }
+        
+        if (startDateField && !startDateField.classList.contains('form-control')) {
+            startDateField.classList.add('form-control');
+        }
+        
+        if (advancePaymentField && !advancePaymentField.classList.contains('form-control')) {
+            advancePaymentField.classList.add('form-control');
+        }
+        
+        if (mealRangeField && !mealRangeField.classList.contains('form-select')) {
+            mealRangeField.classList.add('form-select');
+        }
+        
+        // Add minimum date restriction for start date
+        if (startDateField) {
+            const today = new Date();
+            const minDate = new Date(today);
+            minDate.setDate(today.getDate() + 1); // Set minimum to tomorrow
+            
+            const year = minDate.getFullYear();
+            const month = String(minDate.getMonth() + 1).padStart(2, '0');
+            const day = String(minDate.getDate()).padStart(2, '0');
+            
+            startDateField.setAttribute('min', `${year}-${month}-${day}`);
+            startDateField.setAttribute('type', 'date');
+        }
+    });
+</script>
+{% endblock %}

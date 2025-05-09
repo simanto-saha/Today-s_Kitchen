@@ -1,0 +1,223 @@
+{% extends "register/base.html" %}
+{% block title %}About Us - Today's Kitchen{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-hero {
+        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/static/images/kitchen-bg.jpg');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 100px 20px;
+        text-align: center;
+    }
+    
+    .about-section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+    
+    .feature-box {
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        padding: 30px;
+        margin: 20px 0;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .feature-icon {
+        font-size: 3rem;
+        color: #ff6b6b;
+        margin-bottom: 20px;
+    }
+    
+    .team-member {
+        text-align: center;
+        margin: 30px 0;
+    }
+    
+    .team-member img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 15px;
+        border: 5px solid #ff6b6b;
+    }
+    
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin: 40px 0;
+    }
+    
+    .stat-box {
+        text-align: center;
+        padding: 30px;
+        background-color: #ff6b6b;
+        color: white;
+        border-radius: 10px;
+    }
+    
+    .stat-number {
+        font-size: 3rem;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="about-hero">
+    <h1>About Today's Kitchen</h1>
+    <p class="lead">Delivering happiness through homemade meals since 2025</p>
+</div>
+
+<!-- Main About Section -->
+<div class="about-section">
+    <h2>Our Story</h2>
+    <p>Founded during the pandemic, Today's Kitchen began as a solution to provide fresh, homemade meals to busy professionals, students, and families. What started as a small cloud kitchen has now grown into a beloved local food destination serving hundreds of happy customers daily.</p>
+</div>
+
+<!-- Features Section -->
+<div class="about-section" style="background-color: #fff9f0;">
+    <h2 class="text-center">Why Choose Us</h2>
+    
+    <div class="values-grid">
+        <!-- Feature 1 -->
+        <div class="feature-box">
+            <div class="feature-icon">
+                <i class="fas fa-utensils"></i>
+            </div>
+            <h3>Bachelor-Friendly Meals</h3>
+            <p>We understand the struggles of cooking for one. Our specially curated bachelor meal plans offer:</p>
+            <ul>
+                <li>Ready-to-eat single portions</li>
+                <li>Easy microwaveable options</li>
+                <li>Weekly meal subscriptions</li>
+                <li>Budget-friendly combos</li>
+            </ul>
+        </div>
+        
+        <!-- Feature 2 -->
+        <div class="feature-box">
+            <div class="feature-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <h3>Women-Centric Choices</h3>
+            <p>Our women-friendly menu focuses on:</p>
+            <ul>
+                <li>Nutritionally balanced meals</li>
+                <li>Low-calorie options</li>
+                <li>Iron-rich foods</li>
+                <li>Healthy snack alternatives</li>
+                <li>Special care packages</li>
+            </ul>
+        </div>
+        
+        <!-- Feature 3 -->
+        <div class="feature-box">
+            <div class="feature-icon">
+                <i class="fas fa-cloud"></i>
+            </div>
+            <h3>Cloud Kitchen Advantage</h3>
+            <p>As a modern cloud kitchen, we provide:</p>
+            <ul>
+                <li>Faster delivery times</li>
+                <li>Consistent quality control</li>
+                <li>Wider delivery coverage</li>
+                <li>Eco-friendly packaging</li>
+                <li>Contactless delivery options</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="about-section">
+    <h2 class="text-center">By The Numbers</h2>
+    <div class="values-grid">
+        <div class="stat-box">
+            <i class="fas fa-users fa-2x"></i>
+            <div class="stat-number">1500+</div>
+            <p>Happy Customers</p>
+        </div>
+        <div class="stat-box">
+            <i class="fas fa-utensils fa-2x"></i>
+            <div class="stat-number">50+</div>
+            <p>Menu Items</p>
+        </div>
+        <div class="stat-box">
+            <i class="fas fa-truck fa-2x"></i>
+            <div class="stat-number">98%</div>
+            <p>On-Time Delivery</p>
+        </div>
+    </div>
+</div>
+
+<!-- Team Section -->
+<div class="about-section" style="background-color: #f5f5f5;">
+    <h2 class="text-center">Meet Our Team</h2>
+    <div class="values-grid">
+        <div class="team-member">
+
+            <h3>Chef Simanto Saha </h3>
+            <p>Head Chef & Founder</p>
+            <p>Study at Brac University</p>
+        </div>
+        <div class="team-member">
+            
+            <h3>Muhammed Ashfaque Ahammed</h3>
+            <p>Ensuring balanced meals</p>
+            <p>Study at Brac University</p>
+        </div>
+        <div class="team-member">
+           
+            <h3>Wasif Islam</h3>
+            <p>Delivery Operations</p>
+            <p>Making sure your food arrives hot</p>
+            <p>Study at Brac University</p>
+        </div>
+    </div>
+</div>
+
+<!-- Mission Section -->
+<div class="about-section">
+    <h2>Our Mission</h2>
+    <p>At Today's Kitchen, we believe everyone deserves access to fresh, homemade-quality meals regardless of their cooking skills or busy schedules. Our cloud kitchen model allows us to focus 100% on food quality and delivery efficiency without the overhead of a traditional restaurant.</p>
+    
+    <p>We're particularly proud of our:</p>
+    <ul>
+        <li><strong>Bachelor Meal Program:</strong> Affordable, no-fuss meals for students and young professionals</li>
+        <li><strong>Women's Wellness Menu:</strong> Curated by nutritionists to support women's health</li>
+        <li><strong>Community Initiatives:</strong> Free meals for frontline workers during crises</li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+// Simple animation for stats
+document.addEventListener('DOMContentLoaded', function() {
+    const statNumbers = document.querySelectorAll('.stat-number');
+    
+    statNumbers.forEach(number => {
+        const target = parseInt(number.textContent);
+        let current = 0;
+        const increment = target / 20;
+        
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                clearInterval(timer);
+                current = target;
+            }
+            number.textContent = Math.floor(current) + (number.textContent.includes('%') ? '%' : '+');
+        }, 50);
+    });
+});
+</script>
+{% endblock %}

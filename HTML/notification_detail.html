@@ -1,0 +1,59 @@
+{% extends "register/base.html" %}
+
+{% block content %}
+<div class="notification-detail-container">
+    <h2>Notification Details</h2>
+
+    <div class="notification-detail">
+        <h3>{{ notification.title }}</h3>
+        <p>{{ notification.message }}</p>
+
+        {% if order %}
+            <h4>Order Details:</h4>
+            <p><strong>Order Number:</strong> {{ order.order_number }}</p>
+            <p><strong>Subtotal:</strong> {{ order.subtotal }}</p>
+            <p><strong>Shipping Cost:</strong> {{ order.shipping_cost }}</p>
+            <p><strong>Total Amount:</strong> {{ order.total_amount }}</p>
+            <p><strong>Status:</strong> {{ order.status }}</p>
+
+            <h5>Order Items:</h5>
+            <ul>
+                {% for item in order.items.all %}
+                    <li>
+                        <strong>{{ item.item.name }}</strong> x{{ item.quantity }} - {{ item.price }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No related order found.</p>
+        {% endif %}
+    </div>
+
+    <small>Notification received on: {{ notification.created_at|date:"M d, Y H:i" }}</small>
+</div>
+
+<style>
+.notification-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.notification-detail h3 {
+    color: #333;
+}
+
+.notification-detail p {
+    margin: 10px 0;
+}
+
+.notification-detail ul {
+    list-style: none;
+    padding: 0;
+}
+
+.notification-detail li {
+    padding: 5px 0;
+}
+</style>
+{% endblock %}

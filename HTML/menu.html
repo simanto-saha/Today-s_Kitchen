@@ -1,0 +1,491 @@
+<!-- templates/menu.html -->
+{% extends "register/base.html" %}
+{% block title %}Menu - Today's Kitchen{% endblock %}
+
+{% block extra_css %}
+<style>
+body {
+    font-family: 'Helvetica Neue', sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+.menu-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+.menu-header h2 {
+    text-align: center;
+    color: #ff6b6b;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.menu-header p {
+    text-align: center;
+    color: #666;
+    margin-bottom: 40px;
+    font-size: 1.1rem;
+}
+
+.restaurant-selector {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.restaurant-selector select {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+/* Grid items uniform height fix */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* Card styles */
+.card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+/* Image area fixed height + badge */
+.card-img {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+}
+
+.card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ff6b6b;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+
+/* Content area flex-grow so actions stay at bottom */
+.card-content {
+    flex: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    min-height: 180px; /* Ensure enough space for content */
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.card-desc {
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    flex-grow: 1;
+}
+
+.card-tags {
+    margin-bottom: 8px;
+}
+
+.card-tag {
+    background: #eee;
+    border-radius: 10px;
+    padding: 2px 8px;
+    margin-right: 5px;
+    font-size: 0.75rem;
+    color: #555;
+}
+
+/* Price + Actions row */
+.card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-price {
+    font-weight: bold;
+    color: #ff6b6b;
+    font-size: 1.1rem;
+}
+
+/* Quantity controls */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    margin-right: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.quantity-btn {
+    width: 24px;
+    height: 28px;
+    background: #f5f5f5;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.quantity-btn:hover {
+    background: #e5e5e5;
+}
+
+.quantity-input {
+    width: 36px;
+    height: 28px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    margin: 0;
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+/* Hide number input spinners in other browsers */
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+.add-to-cart-container {
+    display: flex;
+    align-items: center;
+}
+
+.add-to-cart {
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.add-to-cart:hover {
+    background: #e05858;
+}
+
+/* Rating stars */
+.card-rating i {
+    color: #FFD700;
+    margin-right: 1px;
+}
+
+.card-rating span {
+    margin-left: 4px;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+/* Section titles */
+.section-title {
+    font-size: 1.8rem;
+    color: #ff6b6b;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.section-title i {
+    margin-right: 10px;
+}
+
+/* Restaurant info */
+.restaurant-info {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+}
+
+.restaurant-logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 20px;
+    border: 3px solid #ff6b6b;
+}
+
+.restaurant-details h3 {
+    margin: 0 0 8px 0;
+    color: #ff6b6b;
+    font-size: 1.5rem;
+}
+
+.restaurant-details p {
+    margin: 3px 0;
+    color: #555;
+}
+
+.restaurant-address {
+    font-style: italic;
+    color: #999;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="menu-container">
+    <div class="menu-header">
+        <h2>Our Delicious Menu</h2>
+        <p>Explore our diverse selection of homemade meals prepared fresh daily with love.</p>
+    </div>
+
+    <div class="restaurant-selector">
+        <select id="restaurant-select">
+            <option value="">All Restaurants</option>
+            {% for r in restaurants %}
+            <option value="{{ r.id }}" {% if restaurant and restaurant.id == r.id %}selected{% endif %}>{{ r.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    {% if restaurant %}
+    <div class="restaurant-info">
+        {% if restaurant.logo %}
+        <img src="{{ restaurant.logo.url }}" alt="{{ restaurant.name }}" class="restaurant-logo">
+        {% endif %}
+        <div class="restaurant-details">
+            <h3>{{ restaurant.name }}</h3>
+            <p>{{ restaurant.description }}</p>
+            <p class="restaurant-address">{{ restaurant.address }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if todays_specials %}
+    <h2 class="section-title"><i class="fas fa-crown"></i> Today's Specials</h2>
+    <div class="grid">
+        {% for item in todays_specials %}
+        <a href="{% url 'menu_item_detail' item.id %}" class="card">
+            <div class="card-img">
+                <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                <div class="card-badge">Special</div>
+            </div>
+            <div class="card-content">
+                <div class="card-title">{{ item.name }}</div>
+                <p class="card-desc">{{ item.description|truncatechars:80 }}</p>
+                <div class="card-bottom">
+                    <div class="card-price">${{ item.price }}</div>
+                    <div class="add-to-cart-container">
+                        <div class="quantity-controls">
+                            <button class="quantity-btn decrease">-</button>
+                            <input type="number" class="quantity-input" value="1" min="1" max="99">
+                            <button class="quantity-btn increase">+</button>
+                        </div>
+                        <button class="add-to-cart" data-item-id="{{ item.id }}">
+                            <i class="fas fa-shopping-cart"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <h2 class="section-title"><i class="fas fa-utensils"></i> Menu Items</h2>
+    <div class="grid">
+        {% for item in menu_items %}
+        <a href="{% url 'menu_item_detail' item.id %}" class="card">
+            <div class="card-img">
+                <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                {% if item.is_chef_choice %}
+                <div class="card-badge">Chef's Choice</div>
+                {% elif item.is_popular %}
+                <div class="card-badge">Popular</div>
+                {% elif item.is_new %}
+                <div class="card-badge">New</div>
+                {% endif %}
+            </div>
+            <div class="card-content">
+                <div class="card-title">{{ item.name }}</div>
+                <p class="card-desc">{{ item.description|truncatechars:80 }}</p>
+                <div class="card-tags">
+                    {% for tag in item.tags.all %}
+                    <span class="card-tag">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+                <div class="card-bottom">
+                    <div class="card-price">${{ item.price }}</div>
+                    <div class="add-to-cart-container">
+                        <div class="quantity-controls">
+                            <button class="quantity-btn decrease">-</button>
+                            <input type="number" class="quantity-input" value="1" min="1" max="99">
+                            <button class="quantity-btn increase">+</button>
+                        </div>
+                        <button class="add-to-cart" data-item-id="{{ item.id }}">
+                            <i class="fas fa-shopping-cart"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Restaurant selector functionality
+    const restaurantSelect = document.getElementById('restaurant-select');
+    restaurantSelect.addEventListener('change', function() {
+        const restaurantId = this.value;
+        let url = '{% url "menu" %}';
+        if (restaurantId) url += '?restaurant=' + restaurantId;
+        window.location.href = url;
+    });
+    
+    // Quantity control functionality
+    document.querySelectorAll('.quantity-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation(); // Prevent navigation to detail page
+            
+            const input = this.parentElement.querySelector('.quantity-input');
+            let value = parseInt(input.value, 10);
+            
+            if (this.classList.contains('increase')) {
+                value = Math.min(99, value + 1);
+            } else if (this.classList.contains('decrease')) {
+                value = Math.max(1, value - 1);
+            }
+            
+            input.value = value;
+        });
+    });
+    
+    // Prevent propagation for quantity input
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent navigation to detail page
+        });
+        
+        input.addEventListener('change', function(e) {
+            // Clamp value between 1 and 99
+            const value = parseInt(this.value, 10);
+            if (isNaN(value) || value < 1) this.value = 1;
+            if (value > 99) this.value = 99;
+        });
+    });
+    
+    // Add to cart functionality
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();  // Stop propagation to prevent navigation
+
+            const itemId = this.dataset.itemId;
+            
+            // Get the quantity value
+            const quantityInput = this.parentElement.querySelector('.quantity-input');
+            const quantity = parseInt(quantityInput.value, 10);
+            
+            // Validation
+            if (isNaN(quantity) || quantity < 1) {
+                alert('Please enter a valid quantity');
+                return;
+            }
+            
+            // Show loading state
+            const originalHTML = this.innerHTML;
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            // Send request to add to cart
+            fetch(`/add-to-cart/${itemId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    quantity: quantity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success state
+                    this.style.backgroundColor = '#4CAF50';
+                    this.innerHTML = '<i class="fas fa-check"></i>';
+                    
+                    // Update cart counter if exists
+                    const cartCounter = document.querySelector('.cart-counter');
+                    if (cartCounter) {
+                        cartCounter.textContent = data.cart_total;
+                    }
+                    
+                    // Reset button after delay
+                    setTimeout(() => {
+                        this.innerHTML = originalHTML;
+                        this.style.backgroundColor = '';
+                        this.disabled = false;
+                        
+                        // Reset quantity to 1
+                        quantityInput.value = 1;
+                    }, 1500);
+                } else {
+                    // Show error
+                    alert(data.message || 'Failed to add item to cart');
+                    this.innerHTML = originalHTML;
+                    this.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error adding to cart:', error);
+                alert('An error occurred while adding to cart');
+                this.innerHTML = originalHTML;
+                this.disabled = false;
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

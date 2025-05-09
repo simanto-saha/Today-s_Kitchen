@@ -1,0 +1,349 @@
+{% extends "register/base.html" %}
+{% block title %}Order Confirmation{% endblock %}
+
+{% block content %}
+<div class="confirmation-container">
+    <div class="confirmation-header">
+        <div class="success-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+        </div>
+        <h1>Order Confirmed!</h1>
+        <p>Thank you for your purchase. Your order has been received and is now being processed.</p>
+    </div>
+    
+    <div class="order-details">
+        <h2>Order Details</h2>
+        <div class="order-info">
+            <div class="info-row">
+                <span class="label">Order Number:</span>
+                <span class="value">{{ order.order_number }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Date:</span>
+                <span class="value">{{ order.created_at|date:"F j, Y" }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Total:</span>
+                <span class="value">${{ order.total_amount }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Payment Method:</span>
+                <span class="value">
+                    {% if order.payment_method == 'cash' %}Cash on Delivery
+                    {% else %}Credit/Debit Card{% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="shipping-details">
+        <h2>Shipping Address</h2>
+        <address>
+            {{ order.full_name }}<br>
+            {{ order.address }}<br>
+            {{ order.city }}, {{ order.state }} {{ order.postal_code }}<br>
+            {{ order.phone }}
+        </address>
+    </div>
+    
+    <div class="order-items">
+        <h2>Order Items</h2>
+        <div class="items-list">
+            {% for item in order_items %}
+            <div class="order-item">
+                <div class="item-image">
+                    <img src="{{ item.item.image.url }}" alt="{{ item.item.name }}">
+                </div>
+                <div class="item-details">
+                    <h3>{{ item.item.name }}</h3>
+                    <p>Quantity: {{ item.quantity }}</p>
+                    <p>Price: ${{ item.price }}</p>
+                </div>
+                <div class="item-subtotal">
+                    <p>${{ item.subtotal }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="order-summary">
+            <div class="summary-row">
+                <span>Subtotal:</span>
+                <span>${{ order.total_amount }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping:</span>
+                <span>
+                    {% if order.shipping_cost == 0 %}
+                        Free
+                    {% else %}
+                        ${{ order.shipping_cost }}
+                    {% endif %}
+                </span>
+            </div>
+            
+            
+            <div class="summary-row total">
+                <span>Total:</span>
+                <span>${{ order.total_amount }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="next-steps">
+        <h2>What's Next?</h2>
+        <p>You will receive an email confirmation shortly at {{ order.email }}. We will notify you when your order has shipped.</p>
+        <div class="action-buttons">
+            <a href="{% url 'menu' %}" class="continue-btn">Again selecting food </a>
+            <a href="{% url 'track' %}" class="track-btn">Track Order</a>
+        </div>
+    </div>
+    
+    <div class="customer-support">
+        <h2>Need Help?</h2>
+        <p>If you have any questions about your order, please contact our customer support team:</p>
+        <div class="contact-info">
+            <p><i class="fas fa-envelope"></i> support@gmai.com</p>
+            <p><i class="fas fa-phone"></i> 017223247</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .confirmation-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #333;
+    }
+    
+    .confirmation-header, .order-details, .shipping-details, .order-items, .next-steps, .customer-support {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .confirmation-header:hover, .order-details:hover, .shipping-details:hover, .order-items:hover, .next-steps:hover, .customer-support:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+    
+    .confirmation-header {
+        text-align: center;
+        padding: 2rem;
+        background: linear-gradient(to bottom, #f8f9fa, #fff);
+    }
+    
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        color: #5cb85c;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    .confirmation-header h1 {
+        margin-bottom: 1rem;
+        color: #333;
+        font-size: 2.5rem;
+    }
+    
+    h2 {
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        color: #333;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 0.75rem;
+        font-size: 1.5rem;
+    }
+    
+    .order-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .info-row {
+        margin-bottom: 0.5rem;
+    }
+    
+    .label {
+        font-weight: bold;
+        color: #666;
+    }
+    
+    .value {
+        margin-left: 0.5rem;
+        color: #333;
+    }
+    
+    address {
+        font-style: normal;
+        line-height: 1.6;
+    }
+    
+    .order-item {
+        display: flex;
+        border-bottom: 1px solid #eee;
+        padding: 1rem 0;
+        align-items: center;
+    }
+    
+    .order-item:last-child {
+        border-bottom: none;
+    }
+    
+    .item-image {
+        width: 80px;
+        height: 80px;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .item-details {
+        flex: 1;
+    }
+    
+    .item-details h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.1rem;
+    }
+    
+    .item-details p {
+        margin: 0.25rem 0;
+        color: #666;
+    }
+    
+    .item-subtotal {
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        padding-left: 1rem;
+    }
+    
+    .order-summary {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eee;
+    }
+    
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem 0;
+    }
+    
+    .total {
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 2px solid #eee;
+        color: #333;
+    }
+    
+    .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .continue-btn, .track-btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .continue-btn {
+        background-color: #5cb85c;
+        color: white;
+        flex: 1;
+    }
+    
+    .track-btn {
+        background-color: #f0f0f0;
+        color: #333;
+        border: 1px solid #ddd;
+        flex: 1;
+    }
+    
+    .continue-btn:hover {
+        background-color: #4cae4c;
+        transform: translateY(-2px);
+    }
+    
+    .track-btn:hover {
+        background-color: #e9e9e9;
+        transform: translateY(-2px);
+    }
+    
+    .contact-info {
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .contact-info p {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .confirmation-container {
+            padding: 1rem;
+        }
+        
+        .order-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .item-image {
+            margin-bottom: 1rem;
+        }
+        
+        .item-subtotal {
+            margin-top: 1rem;
+            padding-left: 0;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
